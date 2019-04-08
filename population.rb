@@ -7,8 +7,8 @@ class Population
   end
 
   def show
-    individuals.each do |dimensionality|
-      puts dimensionality.join ' '
+    individuals.each do |chromossomes|
+      puts chromossomes.join ' '
     end
   end
 

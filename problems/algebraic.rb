@@ -16,7 +16,7 @@ class Algebraic < Problem
 
   def evaluate(individual)
     translated = translate(individual)
-    return function(translated) + 4
+    function(translated) + 4
   end
 
   def translate(individual)
@@ -39,17 +39,17 @@ class Algebraic < Problem
   private
 
   def function(number)
-    Math::cos(20*number) - number.abs / 2 + number ** 3 / 4
+    Math::cos(20 * number) - number.abs / 2 + number**3 / 4
   end
 
   def decode(binary)
     integer = binary.first(2).inject { |a,b| a.to_s + b.to_s }.to_i(2)
     decimal = binary.last(14).inject { |a,b| a.to_s + b.to_s }.to_i(2)
-    return integer + (decimal.to_f % 10000) / 10000
+    integer + (decimal.to_f % 10_000) / 10_000
   end
 
   def adjust_scale(number)
-    return number - 2
+    number - 2
   end
 end
 

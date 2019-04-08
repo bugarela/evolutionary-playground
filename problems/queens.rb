@@ -6,12 +6,14 @@ class Queens < Problem
     @n = n
     super(population_size)
     @population = generate_population
+
   end
 
   attr_reader :population
 
   def generate_population
-    Population::IntegerPermutation.new(@population_size, @n, lower: 0, upper: @n-1)
+    individuals = Population::IntegerPermutation.new(@population_size, @n, lower: 0, upper: @n-1).individuals
+    individuals.map { |chromossomes| Queens::Individual.new(self, chromossomes) }
   end
 
   def evaluate(individual)
@@ -22,16 +24,17 @@ class Queens < Problem
     return @n - diagonals.uniq.length
   end
 
-  def best
-    @population.individuals.sort_by { |individual| evaluate(individual) }.first
-  end
+  class Queens::Individual
+    def initialize(problem, chromossomes)
+      @problem = problem
+      @chromossomes = chromossomes
+      @info = {}
+    end
 
-  def worst
-    @population.individuals.sort_by { |individual| evaluate(individual) }.last
+    attr_reader :info, :chromossomes
+
+    def fitness
+      @fitness ||= (8 - @problem.evaluate(@chromossomes)).to_f / 8
+    end
   end
 end
-
-# puts Queens.new(10, 8).evaluate([0, 6, 3, 5, 7, 1, 4, 2])
-# puts Queens.new(10, 8).evaluate([0, 6, 2, 5, 7, 1, 4, 3])
-# puts Queens.new(10,8).worst
-
