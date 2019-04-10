@@ -1,10 +1,12 @@
-class Selector
-  def initialize(problem)
-    @problem = problem
-  end
+module Selector
+  class Roulette
+    def initialize(reposition: true)
+      @reposition = reposition
+    end
 
-  class Roulette < Selector
-    def select(reposition: true)
+    def select(problem)
+      @problem = problem
+
       set_probablities
 
       roulette = rand(0.0..1.0)
@@ -22,7 +24,7 @@ class Selector
           selected = roulette_slice.first.first
         end
 
-        population_by_fitness.pop selected unless reposition
+        population_by_fitness.reject { |individual| individual == selected } unless @reposition
         new_population << selected
       end
 

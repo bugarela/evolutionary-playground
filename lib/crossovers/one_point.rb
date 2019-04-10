@@ -7,13 +7,13 @@ module Crossovers
     end
 
     def crossover(parents)
-      first = parents[0].chromossomes
-      second = parents[1].chromossomes
-      offspring = parents
+      first = parents[0]
+      second = parents[1]
+      offspring = []
 
       point = rand(0..first.length)
-      offspring[0].chromossomes = (first.take(point).concat second.drop(point))
-      offspring[1].chromossomes = (second.take(point).concat first.drop(point))
+      offspring[0] = (first.take(point).concat second.drop(point))
+      offspring[1] = (second.take(point).concat first.drop(point))
 
       offspring
     end

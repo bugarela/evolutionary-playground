@@ -1,3 +1,5 @@
+require 'colorize'
+
 require_relative 'problem'
 require_relative '../populations/binary'
 
@@ -9,8 +11,32 @@ class RadioFactory < Problem
   attr_reader :population
 
   def evaluate(individual)
-    lux_employees = translate(individual)
+    lux_employees = individual.value
     function(lux_employees)
+  end
+
+  def translate(individual)
+    decoded = decode(individual)
+    adjust_scale(decoded)
+  end
+
+  def show_generation
+    puts "Best Individual".green
+    puts "Chromossomes: #{best.chromossomes.inspect}".blue
+    puts "Fitness: #{best.fitness}".blue
+
+    lux_employees = best.value
+    standard_employees = 40 - best.value
+
+    puts "Employees: #{standard_employees} Standart, #{lux_employees} Lux".yellow
+    puts "Evaluation: $#{best_value}".yellow
+    puts '---'
+  end
+
+  def update_population!(new_population)
+    @population = new_population.map do |individual|
+      RadioFactory::Individual.new(self, individual)
+    end
   end
 
   class RadioFactory::Individual
@@ -24,7 +50,11 @@ class RadioFactory < Problem
     attr_writer :chromossomes
 
     def fitness
-      @fitness ||= @problem.evaluate(@chromossomes).to_f / 1040
+      @fitness ||= @problem.evaluate(self).to_f / 1040
+    end
+
+    def value
+      @value ||= @problem.translate(@chromossomes)
     end
   end
 
@@ -33,11 +63,6 @@ class RadioFactory < Problem
   def generate_population(population_args)
     individuals = Population::Binary.new(population_args).individuals
     individuals.map { |chromossomes| RadioFactory::Individual.new(self, chromossomes) }
-  end
-
-  def translate(individual)
-    decoded = decode(individual)
-    adjust_scale(decoded)
   end
 
   def function(lux_employees)

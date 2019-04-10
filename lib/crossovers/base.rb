@@ -14,7 +14,7 @@ module Crossovers
         end
       end
 
-      new_population.flatten
+      new_population.flatten(1)
     end
 
     def offspring(parents)

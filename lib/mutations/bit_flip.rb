@@ -4,9 +4,9 @@ module Mutations
       @mutation_probability = mutation_probability
     end
 
-    def mutate!(individuals)
-      individuals.each do |individual|
-        individual.chromossomes = individual.chromossomes.map do |chromossome|
+    def mutate(individuals)
+      individuals.map do |individual|
+        individual.chromossomes.map do |chromossome|
           if rand(0.0..1.0) < @mutation_probability
             1 - chromossome
           else

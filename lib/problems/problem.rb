@@ -3,7 +3,7 @@ class Problem
     @population = population
   end
 
-  attr_writer :population
+  attr_reader :population
 
   def population_size
     population.length
@@ -17,7 +17,11 @@ class Problem
     population_by_fitness.last
   end
 
+  def best_value
+    evaluate(best)
+  end
+
   def population_by_fitness
-    @population.sort_by { |individual| individual.fitness }
+    @population.sort_by(&:fitness)
   end
 end
