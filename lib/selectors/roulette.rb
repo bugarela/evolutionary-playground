@@ -1,4 +1,4 @@
-module Selector
+module Selectors
   class Roulette
     def initialize(reposition: true)
       @reposition = reposition

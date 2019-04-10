@@ -24,7 +24,7 @@ class Optimizer
 end
 
 require_relative 'problems/radio_factory'
-require_relative 'selector'
+require_relative 'selectors/roulette'
 require_relative 'mutations/bit_flip'
 require_relative 'crossovers/two_point'
 
@@ -35,7 +35,7 @@ population_args = {
 
 Optimizer.new(
   RadioFactory.new(population_args),
-  Selector::Roulette.new(reposition: true),
+  Selectors::Roulette.new(reposition: true),
   Mutations::BitFlip.new(0.05),
   Crossovers::TwoPoint.new(0.8)
 ).run(100)
