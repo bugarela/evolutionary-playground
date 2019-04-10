@@ -1,8 +1,14 @@
-require_relative '../population'
+require_relative '../lib/populations/binary.rb'
+require_relative '../lib/populations/integer.rb'
+require_relative '../lib/populations/integer_permutation.rb'
+require_relative '../lib/populations/real.rb'
+
 
 RSpec.describe Population do
   let(:population_size) { 10 }
   let(:dimensionality) { 20 }
+  let(:mutation_probability) { 0.1 }
+  let(:crossover_probability) { 0.1 }
   let(:bounds) do
     {
       lower: -1,
@@ -23,7 +29,7 @@ RSpec.describe Population do
   end
 
   describe 'a binary population' do
-    let(:population) { Population::Binary.new(population_size, dimensionality) }
+    let(:population) { Population::Binary.new(population_size, dimensionality, mutation_probability, crossover_probability) }
 
     it_behaves_like 'a successful generation'
 
@@ -37,7 +43,7 @@ RSpec.describe Population do
   end
 
   describe 'a integer population' do
-    let(:population) { Population::Integer.new(population_size, dimensionality, bounds) }
+    let(:population) { Population::Integer.new(population_size, dimensionality, mutation_probability, crossover_probability, bounds) }
 
     it_behaves_like 'a successful generation'
 
@@ -59,7 +65,7 @@ RSpec.describe Population do
   end
 
   describe 'a integer permutation population' do
-    let(:population) { Population::IntegerPermutation.new(population_size, dimensionality, bounds) }
+    let(:population) { Population::IntegerPermutation.new(population_size, dimensionality, mutation_probability, crossover_probability, bounds) }
 
     it_behaves_like 'a successful generation'
 
@@ -87,7 +93,7 @@ RSpec.describe Population do
   end
 
   describe 'a real population' do
-    let(:population) { Population::Real.new(population_size, dimensionality, bounds) }
+    let(:population) { Population::Real.new(population_size, dimensionality, mutation_probability, crossover_probability, bounds) }
 
     it_behaves_like 'a successful generation'
 

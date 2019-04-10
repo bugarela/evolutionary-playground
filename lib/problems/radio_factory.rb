@@ -1,17 +1,12 @@
 require_relative 'problem'
-require_relative '../population'
+require_relative '../populations/binary'
 
 class RadioFactory < Problem
-  def initialize(population_size)
-    super(generate_population(population_size))
+  def initialize(population_args)
+    super(generate_population(population_args))
   end
 
   attr_reader :population
-
-  def generate_population(population_size)
-    individuals = Population::Binary.new(population_size, 4).individuals
-    individuals.map { |chromossomes| RadioFactory::Individual.new(self, chromossomes) }
-  end
 
   def evaluate(individual)
     lux_employees = translate(individual)
@@ -26,6 +21,7 @@ class RadioFactory < Problem
     end
 
     attr_reader :info, :chromossomes
+    attr_writer :chromossomes
 
     def fitness
       @fitness ||= @problem.evaluate(@chromossomes).to_f / 1040
@@ -33,6 +29,11 @@ class RadioFactory < Problem
   end
 
   private
+
+  def generate_population(population_args)
+    individuals = Population::Binary.new(population_args).individuals
+    individuals.map { |chromossomes| RadioFactory::Individual.new(self, chromossomes) }
+  end
 
   def translate(individual)
     decoded = decode(individual)
@@ -56,5 +57,3 @@ class RadioFactory < Problem
     2 * (8 + (number * 8 / 15).to_i)
   end
 end
-
-puts RadioFactory.new(10)

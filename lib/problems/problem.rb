@@ -3,6 +3,8 @@ class Problem
     @population = population
   end
 
+  attr_writer :population
+
   def population_size
     population.length
   end
