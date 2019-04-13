@@ -13,11 +13,11 @@ module Problems
     end
 
     def best
-      population_by_fitness.first
+      population_by_fitness.last
     end
 
     def worst
-      population_by_fitness.last
+      population_by_fitness.first
     end
 
     def best_value

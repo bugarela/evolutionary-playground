@@ -1,20 +1,20 @@
+require_relative 'base'
+
 module Selectors
-  class Roulette
-    def initialize(reposition: true)
+  class Roulette < Base
+    def initialize(reposition: false, uniform_ranking: false)
       @reposition = reposition
+      @uniform_ranking = uniform_ranking
     end
 
-    def select(problem, elitism)
-      @problem = problem
-
-      set_probablities
+    def selection
+      @uniform_ranking ? set_uniform_probabilities : set_probabilities
 
       roulette = rand(0.0..1.0)
       population_by_fitness = @problem.population_by_fitness
       new_population = []
-      number_of_new_individuals =  elitism ? @problem.population_size - 1 : @problem.population_size
 
-      number_of_new_individuals.times do
+      @problem.population_size.times do
         roulette_slice = population_by_fitness.each_cons(2).select do |elements|
           elements.first.info[:probablity] <= roulette and roulette < elements.last.info[:probablity]
         end
@@ -34,11 +34,19 @@ module Selectors
 
     private
 
-    def set_probablities
+    def set_probabilities
       sum = 0
       @problem.population_by_fitness.each do |individual|
         individual.info[:probablity] = sum + relative_fitness(individual)
         sum += relative_fitness(individual)
+      end
+    end
+
+    def set_uniform_probabilities
+      sum = (@problem.population_size + 1) * @problem.population_size / 2
+
+      @problem.population_by_fitness.each_with_index do |individual, index|
+        individual.info[:probablity] = (index + 1) / sum.to_f
       end
     end
 

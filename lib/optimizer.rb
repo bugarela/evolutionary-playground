@@ -20,6 +20,8 @@ class Optimizer
       recombined_individuals = @crossover.recombine(mutated_individuals)
 
       @problem.update_population!(recombined_individuals)
+      binding.pry unless @problem.population.individuals.first
+
       @problem.show_generation
       max = @problem.best_value if @problem.best_value > max
     end
@@ -28,7 +30,7 @@ class Optimizer
 end
 
 require_relative 'problems/radio_factory'
-require_relative 'selectors/roulette'
+require_relative 'selectors/tournament'
 require_relative 'mutations/bit_flip'
 require_relative 'crossovers/two_point'
 
@@ -39,7 +41,7 @@ population_args = {
 
 Optimizer.new(
   Problems::RadioFactory.new(population_args),
-  Selectors::Roulette.new(reposition: true),
+  Selectors::Tournament.new(k: 2, kp: 1),
   Mutations::BitFlip.new(0.05),
   Crossovers::TwoPoint.new(0.99),
   elitism: true
