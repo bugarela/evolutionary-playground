@@ -1,7 +1,7 @@
-require_relative 'problem'
+require_relative 'base'
 require_relative '../population'
 
-class Algebraic < Problem
+class Algebraic < Base
   def initialize(population_size, dimensionality)
     super(population_size)
     @dimensionality = dimensionality

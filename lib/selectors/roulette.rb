@@ -4,7 +4,7 @@ module Selectors
       @reposition = reposition
     end
 
-    def select(problem)
+    def select(problem, elitism)
       @problem = problem
 
       set_probablities
@@ -12,8 +12,9 @@ module Selectors
       roulette = rand(0.0..1.0)
       population_by_fitness = @problem.population_by_fitness
       new_population = []
+      number_of_new_individuals =  elitism ? @problem.population_size - 1 : @problem.population_size
 
-      @problem.population_size.times do
+      number_of_new_individuals.times do
         roulette_slice = population_by_fitness.each_cons(2).select do |elements|
           elements.first.info[:probablity] <= roulette and roulette < elements.last.info[:probablity]
         end
@@ -47,7 +48,7 @@ module Selectors
 
     def cumulative_fitness
       sum = 0
-      @problem.population.each { |individual| sum += individual.fitness }
+      @problem.population_by_fitness.each { |individual| sum += individual.fitness }
       sum
     end
   end

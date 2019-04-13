@@ -1,15 +1,19 @@
 class Optimizer
-  def initialize(problem, selector, mutation, crossover)
+  def initialize(problem, selector, mutation, crossover, elitism: false)
     @problem = problem
     @selector = selector
     @mutation = mutation
     @crossover = crossover
   end
 
+  attr_reader :elitism
+
   def run(number_of_generations)
     max = 0
     number_of_generations.times do
-      selected_population = @selector.select(@problem)
+      selected_population = @selector.select(@problem, @elitism)
+
+      selected_population.concat @problem.best.chromossomes if @elitism
 
       mutated_individuals = @mutation.mutate(selected_population)
 
@@ -34,8 +38,9 @@ population_args = {
 }
 
 Optimizer.new(
-  RadioFactory.new(population_args),
+  Problems::RadioFactory.new(population_args),
   Selectors::Roulette.new(reposition: true),
   Mutations::BitFlip.new(0.05),
-  Crossovers::TwoPoint.new(0.8)
+  Crossovers::TwoPoint.new(0.99),
+  elitism: true
 ).run(100)

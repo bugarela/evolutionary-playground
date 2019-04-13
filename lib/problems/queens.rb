@@ -1,7 +1,7 @@
-require_relative 'problem'
+require_relative 'base'
 require_relative '../population'
 
-class Queens < Problem
+class Queens < Base
   def initialize(population_size, n)
     @n = n
     super(population_size)
