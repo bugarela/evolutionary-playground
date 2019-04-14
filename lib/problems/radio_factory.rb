@@ -12,10 +12,6 @@ module Problems
 
     attr_reader :population
 
-    # def individuals
-    #   @population.individuals
-    # end
-
     def evaluate(individual)
       lux_employees = individual.value
       function(lux_employees)
@@ -26,17 +22,11 @@ module Problems
       adjust_scale(decoded)
     end
 
-    def show_generation
-      puts 'Best Individual'.green
-      puts "Chromossomes: #{best.chromossomes.inspect}".blue
-      puts "Fitness: #{best.fitness}".blue
-
-      lux_employees = best.value
-      standard_employees = 40 - best.value
+    def show_variables(best_value)
+      lux_employees = best_value
+      standard_employees = 40 - best_value
 
       puts "Employees: #{standard_employees} Standart, #{lux_employees} Lux".yellow
-      puts "Evaluation: $#{best_value}".yellow
-      puts '---'
     end
 
     private

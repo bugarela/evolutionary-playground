@@ -15,4 +15,14 @@ class Individual
   def value
     @value ||= @problem.translate(@chromossomes)
   end
+
+  def show
+    puts 'Best Individual'.green
+    puts "Chromossomes: #{@chromossomes.inspect}".blue
+    puts "Fitness: #{fitness}".blue
+
+    @problem.show_variables(value)
+
+    puts "Evaluation: $#{@problem.evaluate(self)}".yellow
+  end
 end

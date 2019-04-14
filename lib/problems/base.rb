@@ -20,8 +20,8 @@ module Problems
       population_by_fitness.first
     end
 
-    def best_value
-      evaluate(best)
+    def average_fitness
+      population.individuals.map(&:fitness).reduce(:+).to_f / population_size
     end
 
     def population_by_fitness
