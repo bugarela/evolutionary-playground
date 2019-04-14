@@ -1,5 +1,3 @@
-require 'colorize'
-
 require_relative 'base'
 require_relative '../individual'
 require_relative '../populations/binary'
@@ -7,18 +5,23 @@ require_relative '../populations/binary'
 module Problems
   class RadioFactory < Base
     def initialize(population_args)
-      super(Population::Binary.new(self, population_args))
-    end
 
-    attr_reader :population
+      population_args.merge!(problem_population_args)
+
+      super(
+        Populations::Binary.new(self, population_args),
+        offset: 0,
+        scale: 1040
+      )
+    end
 
     def evaluate(individual)
       lux_employees = individual.value
       function(lux_employees)
     end
 
-    def translate(individual)
-      decoded = decode(individual)
+    def translate(chromossomes)
+      decoded = decode(chromossomes)
       adjust_scale(decoded)
     end
 
@@ -27,6 +30,10 @@ module Problems
       standard_employees = 40 - best_value
 
       puts "Employees: #{standard_employees} Standart, #{lux_employees} Lux".yellow
+    end
+
+    def show_evaluation(individual)
+      puts "Evaluation: $#{evaluate(individual)}".yellow
     end
 
     private
@@ -46,6 +53,12 @@ module Problems
 
     def adjust_scale(number)
       2 * (8 + (number * 8 / 15).to_i)
+    end
+
+    def problem_population_args
+      {
+        dimensionality: 4,
+      }
     end
   end
 end

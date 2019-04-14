@@ -1,4 +1,4 @@
-module Population
+module Populations
   class Base
     def initialize(problem, size, dimensionality)
       @problem = problem

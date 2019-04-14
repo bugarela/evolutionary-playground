@@ -9,7 +9,7 @@ class Individual
   attr_writer :chromossomes
 
   def fitness
-    @fitness ||= @problem.evaluate(self).to_f / 1040
+    @fitness ||= (@problem.offset + @problem.evaluate(self).to_f) / @problem.scale
   end
 
   def value
@@ -22,7 +22,6 @@ class Individual
     puts "Fitness: #{fitness}".blue
 
     @problem.show_variables(value)
-
-    puts "Evaluation: $#{@problem.evaluate(self)}".yellow
+    @problem.show_evaluation(self)
   end
 end

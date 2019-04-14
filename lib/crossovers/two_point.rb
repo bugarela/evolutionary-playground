@@ -11,7 +11,7 @@ module Crossovers
       second = parents[1]
       offspring = []
 
-      points = [rand(0..first.length), rand(0..first.length)].sort
+      points = [rand(0..first.length - 1), rand(0..first.length - 1)].sort
       point_one = points[0]
       point_two = points[1]
 

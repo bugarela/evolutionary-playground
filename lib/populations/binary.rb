@@ -1,6 +1,6 @@
 require_relative 'base'
 
-module Population
+module Populations
   class Binary < Base
     def initialize(problem, size:, dimensionality:)
       super(problem, size, dimensionality)

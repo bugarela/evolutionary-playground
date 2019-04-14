@@ -1,12 +1,15 @@
 require 'pry'
+require 'colorize'
 
 module Problems
   class Base
-    def initialize(population)
+    def initialize(population, offset:, scale:)
       @population = population
+      @offset = offset
+      @scale = scale
     end
 
-    attr_reader :population
+    attr_reader :population, :offset, :scale
 
     def population_size
       population.individuals.length

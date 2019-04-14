@@ -45,20 +45,19 @@ class Optimizer
   end
 end
 
-require_relative 'problems/radio_factory'
+require_relative 'problems/queens'
 require_relative 'selectors/tournament'
-require_relative 'mutations/bit_flip'
-require_relative 'crossovers/two_point'
+require_relative 'mutations/swap'
+require_relative 'crossovers/pmx'
 
 population_args = {
   size: 20,
-  dimensionality: 4,
 }
 
 Optimizer.new(
-  Problems::RadioFactory.new(population_args),
+  Problems::Queens.new(population_args, 8),
   Selectors::Tournament.new(k: 2, kp: 1),
-  Mutations::BitFlip.new(0.05),
-  Crossovers::TwoPoint.new(0.99),
+  Mutations::Swap.new(0.1),
+  Crossovers::PMX.new(0.99),
   # elitism: true
 ).run(100)

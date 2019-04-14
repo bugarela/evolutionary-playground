@@ -1,16 +1,19 @@
 require_relative 'base'
 
-module Population
+module Populations
   class IntegerPermutation < Base
-    def initialize(size, dimensionality, mutation_probability, crossover_probability, bounds)
+    def initialize(problem, bounds:, size:, dimensionality:)
       @bounds = bounds
-      super(size, dimensionality, mutation_probability, crossover_probability)
+      super(problem, size, dimensionality)
     end
 
+    attr_writer :individuals
+
     def individuals
-      @size.times.collect do
-        integers = (Array @bounds[:lower]..@bounds[:upper]).shuffle
-        integers.take(@dimensionality)
+      @individuals ||= Array.new(@size) do
+        chromossomes = (Array @bounds[:lower]..@bounds[:upper]).shuffle
+        chromossomes = chromossomes.take(@dimensionality)
+        Individual.new(@problem, chromossomes)
       end
     end
   end
