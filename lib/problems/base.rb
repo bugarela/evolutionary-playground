@@ -24,17 +24,23 @@ module Problems
     end
 
     def average_fitness
-      population.individuals.map(&:fitness).reduce(:+).to_f / population_size
+      population.individuals.map(&:fitness).mean
     end
 
     def population_by_fitness
       @population_by_fitness ||= @population.individuals.sort_by(&:fitness)
     end
 
-    def update_population!(new_population)
-      @population_by_fitness = nil
+    def update_population!(new_population, keep: nil)
       @population.individuals = new_population.map do |individual|
         Individual.new(self, individual)
+      end
+      @population_by_fitness = nil
+
+      if keep
+        @population.individuals = population_by_fitness.drop(1)
+        @population.individuals << keep
+        @population_by_fitness = nil
       end
     end
   end

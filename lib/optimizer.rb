@@ -1,3 +1,4 @@
+require 'descriptive_statistics'
 require_relative 'plotter'
 
 class Optimizer
@@ -6,9 +7,31 @@ class Optimizer
     @selector = selector
     @mutation = mutation
     @crossover = crossover
+    @elitism = elitism
   end
 
-  attr_reader :elitism
+  def test(runs:, generations:)
+    best_average = []
+    average_average = []
+    worst_average = []
+    final_bests = []
+
+    runs.times do
+      best, average, worst = run(generations)
+      best_average << best
+      average_average << average
+      worst_average << worst
+      final_bests << best.max
+    end
+
+    best_average = best_average.transpose.map(&:mean)
+    average_average = average_average.transpose.map(&:mean)
+    worst_average = worst_average.transpose.map(&:mean)
+
+
+    Plotter.new.plot(best_average, average_average, worst_average)
+    puts "Standard Deviation: #{final_bests.standard_deviation}".red
+  end
 
   def run(number_of_generations)
     current_best_fitness = 0
@@ -18,15 +41,17 @@ class Optimizer
     generations_worst = []
 
     number_of_generations.times do
-      selected_population = @selector.select(@problem, @elitism)
-
-      selected_population.concat @problem.best.chromossomes if @elitism
+      selected_population = @selector.select(@problem)
 
       mutated_individuals = @mutation.mutate(selected_population)
 
       recombined_individuals = @crossover.recombine(mutated_individuals)
 
-      @problem.update_population!(recombined_individuals)
+      if @elitism
+        @problem.update_population!(recombined_individuals, keep: best_individual)
+      else
+        @problem.update_population!(recombined_individuals)
+      end
 
       generation_best_fitness = @problem.best.fitness
 
@@ -41,7 +66,8 @@ class Optimizer
     end
 
     best_individual.show
-    Plotter.new.plot(generations_best, generations_average, generations_worst)
+
+    [generations_best, generations_average, generations_worst]
   end
 end
 
@@ -55,9 +81,9 @@ population_args = {
 }
 
 Optimizer.new(
-  Problems::Queens.new(population_args, 8),
+  Problems::Queens.new(population_args, 64),
   Selectors::Tournament.new(k: 2, kp: 1),
   Mutations::Swap.new(0.1),
   Crossovers::PMX.new(0.99),
-  # elitism: true
-).run(100)
+  elitism: true
+).test(runs: 1, generations: 100)
