@@ -1,46 +1,48 @@
 require 'pry'
 require 'colorize'
+require_relative '../individual'
 
 module Problems
   class Base
-    def initialize(population, offset:, scale:)
-      @population = population
+    def initialize(individuals, offset:, scale:)
+      @individuals = individuals
       @offset = offset
       @scale = scale
     end
 
-    attr_reader :population, :offset, :scale
+    attr_reader :individuals, :offset, :scale
+    attr_writer :individuals
 
     def population_size
-      population.individuals.length
+      individuals.length
     end
 
     def best
-      population_by_fitness.last
+      individuals_by_fitness.last
     end
 
     def worst
-      population_by_fitness.first
+      individuals_by_fitness.first
     end
 
     def average_fitness
-      population.individuals.map(&:fitness).mean
+      individuals.map(&:fitness).mean
     end
 
-    def population_by_fitness
-      @population_by_fitness ||= @population.individuals.sort_by(&:fitness)
+    def individuals_by_fitness
+      @individuals_by_fitness ||= @individuals.sort_by(&:fitness)
     end
 
-    def update_population!(new_population, keep: nil)
-      @population.individuals = new_population.map do |individual|
+    def update_individuals!(new_individuals, keep: nil)
+      @individuals = new_individuals.map do |individual|
         Individual.new(self, individual)
       end
-      @population_by_fitness = nil
+      @individuals_by_fitness = nil
 
       if keep
-        @population.individuals = population_by_fitness.drop(1)
-        @population.individuals << keep
-        @population_by_fitness = nil
+        @individuals = individuals_by_fitness.drop(1)
+        @individuals << keep
+        @individuals_by_fitness = nil
       end
     end
   end

@@ -11,7 +11,7 @@ module Selectors
       @uniform_ranking ? set_uniform_probabilities : set_probabilities
 
       roulette = rand(0.0..1.0)
-      population_by_fitness = @problem.population_by_fitness
+      population_by_fitness = @problem.individuals_by_fitness
       new_population = []
 
       @problem.population_size.times do
@@ -36,7 +36,7 @@ module Selectors
 
     def set_probabilities
       sum = 0
-      @problem.population_by_fitness.each do |individual|
+      @problem.individuals_by_fitness.each do |individual|
         individual.info[:probablity] = sum + relative_fitness(individual)
         sum += relative_fitness(individual)
       end
@@ -45,7 +45,7 @@ module Selectors
     def set_uniform_probabilities
       sum = (@problem.population_size + 1) * @problem.population_size / 2
 
-      @problem.population_by_fitness.each_with_index do |individual, index|
+      @problem.individuals_by_fitness.each_with_index do |individual, index|
         individual.info[:probablity] = (index + 1) / sum.to_f
       end
     end
@@ -56,7 +56,7 @@ module Selectors
 
     def cumulative_fitness
       sum = 0
-      @problem.population_by_fitness.each { |individual| sum += individual.fitness }
+      @problem.individuals_by_fitness.each { |individual| sum += individual.fitness }
       sum
     end
   end

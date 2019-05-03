@@ -12,7 +12,7 @@ module Selectors
       rounds = @problem.population_size
 
       rounds.times do
-        competitors = @problem.population.individuals.sample(@k)
+        competitors = @problem.individuals.sample(@k)
         competitors = competitors.sort_by(&:fitness)
         if @kp >= rand(0.0..1.0)
           new_population << competitors.last

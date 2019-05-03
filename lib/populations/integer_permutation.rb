@@ -5,12 +5,14 @@ module Populations
     def initialize(problem, bounds:, size:, dimensionality:)
       @bounds = bounds
       super(problem, size, dimensionality)
+      @individuals = generate_individuals
     end
 
+    attr_reader :individuals
     attr_writer :individuals
 
-    def individuals
-      @individuals ||= Array.new(@size) do
+    def generate_individuals
+      Array.new(@size) do
         chromossomes = (Array @bounds[:lower]..@bounds[:upper]).shuffle
         chromossomes = chromossomes.take(@dimensionality)
         Individual.new(@problem, chromossomes)

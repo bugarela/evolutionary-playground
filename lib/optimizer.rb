@@ -28,13 +28,12 @@ class Optimizer
     average_average = average_average.transpose.map(&:mean)
     worst_average = worst_average.transpose.map(&:mean)
 
-
     Plotter.new.plot(best_average, average_average, worst_average)
+    puts "Average: #{final_bests.mean}".red
     puts "Standard Deviation: #{final_bests.standard_deviation}".red
   end
 
   def run(number_of_generations)
-    current_best_fitness = 0
     best_individual = nil
     generations_best = []
     generations_average = []
@@ -48,15 +47,14 @@ class Optimizer
       recombined_individuals = @crossover.recombine(mutated_individuals)
 
       if @elitism
-        @problem.update_population!(recombined_individuals, keep: best_individual)
+        @problem.update_individuals!(recombined_individuals, keep: best_individual)
       else
-        @problem.update_population!(recombined_individuals)
+        @problem.update_individuals!(recombined_individuals)
       end
+      binding.pry unless (recombined_individuals & @problem.individuals.map(&:chromossomes)).count == 50
+      best_individual ||= @problem.best
 
-      generation_best_fitness = @problem.best.fitness
-
-      if generation_best_fitness > current_best_fitness
-        current_best_fitness = generation_best_fitness
+      if @problem.best.fitness > best_individual.fitness
         best_individual = @problem.best
       end
 
@@ -65,6 +63,7 @@ class Optimizer
       generations_worst << @problem.worst.fitness
     end
 
+    puts 'Best Individual'.green
     best_individual.show
 
     [generations_best, generations_average, generations_worst]
@@ -77,13 +76,13 @@ require_relative 'mutations/swap'
 require_relative 'crossovers/pmx'
 
 population_args = {
-  size: 20,
+  size: 50,
 }
 
 Optimizer.new(
-  Problems::Queens.new(population_args, 64),
+  Problems::Queens.new(population_args, 8),
   Selectors::Tournament.new(k: 2, kp: 1),
   Mutations::Swap.new(0.1),
   Crossovers::PMX.new(0.99),
   elitism: true
-).test(runs: 1, generations: 100)
+).test(runs: 5, generations: 100)

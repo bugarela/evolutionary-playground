@@ -6,9 +6,10 @@ class Individual
   end
 
   attr_reader :info, :chromossomes
-  attr_writer :chromossomes
+  # attr_writer :chromossomes
 
   def fitness
+    # binding.pry if ((@problem.offset + @problem.evaluate(self).to_f) / @problem.scale) == 1 and @problem.evaluate(self) != 0
     @fitness ||= (@problem.offset + @problem.evaluate(self).to_f) / @problem.scale
   end
 
@@ -17,7 +18,7 @@ class Individual
   end
 
   def show
-    puts 'Best Individual'.green
+    # binding.pry
     puts "Chromossomes: #{@chromossomes.inspect}".blue
     puts "Fitness: #{fitness}".blue
 

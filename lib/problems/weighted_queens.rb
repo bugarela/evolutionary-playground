@@ -3,30 +3,34 @@ require_relative '../individual'
 require_relative '../populations/integer_permutation'
 
 module Problems
-  class Queens < Base
+  class WeightedQueens < Base
     def initialize(population_args, n)
       @n = n
 
       population_args.merge!(problem_population_args)
 
       super(
-        Populations::IntegerPermutation.new(self, population_args).individuals,
-        offset: -1 * n,
-        scale: -1 * n
+        Populations::IntegerPermutation.new(self, population_args),
+        offset: 0,
+        scale: 1, #weights.flatten.sort.reverse.take(@n).sum,
       )
-
     end
 
     def evaluate(individual)
       positive_diagonal = []
       negative_diagonal = []
+      profit = 0
 
       individual.chromossomes.each_with_index do |position, index|
         positive_diagonal << position - index
         negative_diagonal << position + index
+        profit += weights[index][position]
       end
 
-      2*@n - positive_diagonal.uniq.length - negative_diagonal.uniq.length
+      conflicts = 2 * @n - positive_diagonal.uniq.length - negative_diagonal.uniq.length
+      individual.info[:conflicts] = conflicts
+      # binding.pry if conflicts.zero?
+      (@n - conflicts.to_f)/@n.to_f
     end
 
     def translate(chromossomes)
@@ -47,7 +51,8 @@ module Problems
     end
 
     def show_evaluation(individual)
-      puts "Conflicts: #{evaluate(individual)}".yellow
+      puts "Profit: #{evaluate(individual)}".green
+      puts "Conflicts: #{individual.info[:conflicts]}".red
     end
 
     private
@@ -60,6 +65,20 @@ module Problems
           upper: @n - 1,
         }
       }
+    end
+
+    def weights
+      return @weights if @weights
+
+      board = Array.new(@n) { Array.new(@n) }
+      @n.times do |i|
+        @n.times do |j|
+          value = 1 + 8 * i + j
+          board[i][j] = i.even? ? Math.sqrt(value) : Math.log(value, 10)
+        end
+      end
+
+      board
     end
   end
 end
