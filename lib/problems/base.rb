@@ -5,16 +5,15 @@ require_relative '../individual'
 module Problems
   class Base
     def initialize(individuals, offset:, scale:)
-      @individuals = individuals
       @offset = offset
       @scale = scale
+      @individuals_by_fitness = individuals.sort_by(&:fitness)
     end
 
-    attr_reader :individuals, :offset, :scale
-    attr_writer :individuals
+    attr_reader :offset, :scale, :individuals_by_fitness
 
     def population_size
-      individuals.length
+      individuals_by_fitness.length
     end
 
     def best
@@ -26,24 +25,23 @@ module Problems
     end
 
     def average_fitness
-      individuals.map(&:fitness).mean
+      individuals_by_fitness.map(&:fitness).mean
     end
 
-    def individuals_by_fitness
-      @individuals_by_fitness ||= @individuals.sort_by(&:fitness)
-    end
-
-    def update_individuals!(new_individuals, keep: nil)
-      @individuals = new_individuals.map do |individual|
-        Individual.new(self, individual)
+    def update_individuals!(new_individuals, generation, keep: nil)
+      individuals = new_individuals.map do |individual|
+        Individual.new(self, individual, generation)
       end
-      @individuals_by_fitness = nil
+      @individuals_by_fitness = individuals.sort_by(&:fitness)
 
       if keep
-        @individuals = individuals_by_fitness.drop(1)
-        @individuals << keep
-        @individuals_by_fitness = nil
+        individuals = @individuals_by_fitness.drop(1)
+        keep.reset_fitness!
+        individuals << keep
+        @individuals_by_fitness = individuals.sort_by(&:fitness)
       end
+
+      @individuals_by_fitness
     end
   end
 end

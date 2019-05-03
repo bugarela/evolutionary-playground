@@ -14,7 +14,6 @@ module Problems
         offset: -1 * n,
         scale: -1 * n
       )
-
     end
 
     def evaluate(individual)

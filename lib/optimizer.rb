@@ -39,7 +39,7 @@ class Optimizer
     generations_average = []
     generations_worst = []
 
-    number_of_generations.times do
+    number_of_generations.times do |generation|
       selected_population = @selector.select(@problem)
 
       mutated_individuals = @mutation.mutate(selected_population)
@@ -47,15 +47,15 @@ class Optimizer
       recombined_individuals = @crossover.recombine(mutated_individuals)
 
       if @elitism
-        @problem.update_individuals!(recombined_individuals, keep: best_individual)
+        @problem.update_individuals!(recombined_individuals, generation, keep: best_individual)
       else
-        @problem.update_individuals!(recombined_individuals)
+        @problem.update_individuals!(recombined_individuals, generation)
       end
-      binding.pry unless (recombined_individuals & @problem.individuals.map(&:chromossomes)).count == 50
-      best_individual ||= @problem.best
+
+      best_individual ||= @problem.best.dup
 
       if @problem.best.fitness > best_individual.fitness
-        best_individual = @problem.best
+        best_individual = @problem.best.dup
       end
 
       generations_best << @problem.best.fitness
@@ -70,7 +70,7 @@ class Optimizer
   end
 end
 
-require_relative 'problems/queens'
+require_relative 'problems/weighted_queens'
 require_relative 'selectors/tournament'
 require_relative 'mutations/swap'
 require_relative 'crossovers/pmx'
@@ -80,7 +80,7 @@ population_args = {
 }
 
 Optimizer.new(
-  Problems::Queens.new(population_args, 8),
+  Problems::WeightedQueens.new(population_args, 8),
   Selectors::Tournament.new(k: 2, kp: 1),
   Mutations::Swap.new(0.1),
   Crossovers::PMX.new(0.99),

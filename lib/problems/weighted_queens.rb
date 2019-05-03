@@ -10,9 +10,9 @@ module Problems
       population_args.merge!(problem_population_args)
 
       super(
-        Populations::IntegerPermutation.new(self, population_args),
+        Populations::IntegerPermutation.new(self, population_args).individuals,
         offset: 0,
-        scale: 1, #weights.flatten.sort.reverse.take(@n).sum,
+        scale: weights.flatten.sort.reverse.take(@n).sum,
       )
     end
 
@@ -29,8 +29,7 @@ module Problems
 
       conflicts = 2 * @n - positive_diagonal.uniq.length - negative_diagonal.uniq.length
       individual.info[:conflicts] = conflicts
-      # binding.pry if conflicts.zero?
-      (@n - conflicts.to_f)/@n.to_f
+      conflicts.zero? ? profit : 0
     end
 
     def translate(chromossomes)

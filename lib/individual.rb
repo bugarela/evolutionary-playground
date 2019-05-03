@@ -1,16 +1,20 @@
 class Individual
-  def initialize(problem, chromossomes)
+  def initialize(problem, chromossomes, generation=0)
     @problem = problem
     @chromossomes = chromossomes
+    @generation = generation
     @info = {}
   end
 
   attr_reader :info, :chromossomes
-  # attr_writer :chromossomes
 
   def fitness
-    # binding.pry if ((@problem.offset + @problem.evaluate(self).to_f) / @problem.scale) == 1 and @problem.evaluate(self) != 0
+    # raise if @fitness and ((@problem.offset + @problem.evaluate(self).to_f) / @problem.scale) != @fitness
     @fitness ||= (@problem.offset + @problem.evaluate(self).to_f) / @problem.scale
+  end
+
+  def reset_fitness!
+    @fitness = nil
   end
 
   def value
@@ -18,7 +22,7 @@ class Individual
   end
 
   def show
-    # binding.pry
+    puts "Generation: #{@generation}".blue
     puts "Chromossomes: #{@chromossomes.inspect}".blue
     puts "Fitness: #{fitness}".blue
 

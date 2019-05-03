@@ -6,8 +6,6 @@ module Selectors
       @problem = problem
       new_population = selection
 
-
-
       new_population
     end
   end
