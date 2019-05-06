@@ -7,12 +7,11 @@ module Problems
     def initialize(population_args, n)
       @n = n
 
-      population_args.merge!(problem_population_args)
+      @population_args = population_args.merge(problem_population_args)
 
       super(
-        Populations::IntegerPermutation.new(self, population_args).individuals,
-        offset: -1 * n,
-        scale: -1 * n
+        offset: -1 * n/10,
+        scale: -1 * n/10
       )
     end
 
@@ -38,11 +37,15 @@ module Problems
       board
     end
 
+    def new_population
+      Populations::IntegerPermutation.new(self, @population_args).individuals
+    end
+
     def show_variables(best_value)
-      puts 'Board:'.yellow
-      best_value.each do |row|
-        puts (row.join ' ').yellow
-      end
+      # puts 'Board:'.yellow
+      # best_value.each do |row|
+      #   puts (row.join ' ').yellow
+      # end
     end
 
     def show_evaluation(individual)

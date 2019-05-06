@@ -5,7 +5,7 @@ require_relative '../mutations/swap'
 require_relative '../crossovers/pmx'
 
 population_args = {
-  size: 50,
+  size: 30,
 }
 
 Optimizer.new(
@@ -14,4 +14,4 @@ Optimizer.new(
   Mutations::Swap.new(0.1),
   Crossovers::PMX.new(0.99),
   elitism: true
-).test(runs: 30, generations: 100)
+).test(runs: 30, generations: 1000)

@@ -6,10 +6,9 @@ module Problems
   class RadioFactory < Base
     def initialize(population_args)
 
-      population_args.merge!(problem_population_args)
+      @population_args = population_args.merge(problem_population_args)
 
       super(
-        Populations::Binary.new(self, population_args).individuals,
         offset: 0,
         scale: 1040
       )
@@ -23,6 +22,10 @@ module Problems
     def translate(chromossomes)
       decoded = decode(chromossomes)
       adjust_scale(decoded)
+    end
+
+    def new_population
+      Populations::Binary.new(self, @population_args).individuals
     end
 
     def show_variables(best_value)

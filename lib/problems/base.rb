@@ -4,10 +4,9 @@ require_relative '../individual'
 
 module Problems
   class Base
-    def initialize(individuals, offset:, scale:)
+    def initialize(offset:, scale:)
       @offset = offset
       @scale = scale
-      @individuals_by_fitness = individuals.sort_by(&:fitness)
     end
 
     attr_reader :offset, :scale, :individuals_by_fitness
@@ -46,6 +45,10 @@ module Problems
       end
 
       @individuals_by_fitness
+    end
+
+    def reset_individuals!
+      @individuals_by_fitness = new_population.sort_by(&:fitness)
     end
   end
 end

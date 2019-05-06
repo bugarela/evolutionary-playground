@@ -11,7 +11,7 @@ population_args = {
 Optimizer.new(
   Problems::WeightedQueens.new(population_args, 8),
   Selectors::Tournament.new(k: 2, kp: 1),
-  Mutations::Swap.new(0.1),
+  Mutations::Swap.new(0.15),
   Crossovers::PMX.new(0.99),
   elitism: true
-).test(runs: 30, generations: 100)
+).test(runs: 30, generations: 500)

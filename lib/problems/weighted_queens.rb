@@ -7,12 +7,11 @@ module Problems
     def initialize(population_args, n)
       @n = n
 
-      population_args.merge!(problem_population_args)
+      @population_args = population_args.merge(problem_population_args)
 
       super(
-        Populations::IntegerPermutation.new(self, population_args).individuals,
-        offset: 0,
-        scale: weights.flatten.sort.reverse.take(@n).sum,
+        offset: -23,
+        scale: calculate_scale,
       )
     end
 
@@ -30,11 +29,10 @@ module Problems
       conflicts = 2 * @n - positive_diagonal.uniq.length - negative_diagonal.uniq.length
       individual.info[:conflicts] = conflicts
       profit
-      # conflicts.zero? ? profit : 0
     end
 
     def penality(individual)
-      individual.info[:conflicts]
+      individual.info[:conflicts] * calculate_scale/2
     end
 
     def translate(chromossomes)
@@ -45,6 +43,10 @@ module Problems
       end
 
       board
+    end
+
+    def new_population
+      Populations::IntegerPermutation.new(self, @population_args).individuals
     end
 
     def show_variables(best_value)
@@ -69,6 +71,11 @@ module Problems
           upper: @n - 1,
         }
       }
+    end
+
+    def calculate_scale
+      4
+      # weights.flatten.sort.reverse.take(@n).sum / 2
     end
 
     def weights

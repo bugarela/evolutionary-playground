@@ -34,6 +34,8 @@ class Optimizer
   end
 
   def run(number_of_generations)
+    @problem.reset_individuals!
+
     best_individual = nil
     generations_best = []
     generations_average = []
