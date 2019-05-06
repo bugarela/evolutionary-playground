@@ -29,7 +29,12 @@ module Problems
 
       conflicts = 2 * @n - positive_diagonal.uniq.length - negative_diagonal.uniq.length
       individual.info[:conflicts] = conflicts
-      conflicts.zero? ? profit : 0
+      profit
+      # conflicts.zero? ? profit : 0
+    end
+
+    def penality(individual)
+      individual.info[:conflicts]
     end
 
     def translate(chromossomes)

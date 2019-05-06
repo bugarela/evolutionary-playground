@@ -47,7 +47,11 @@ class Optimizer
       recombined_individuals = @crossover.recombine(mutated_individuals)
 
       if @elitism
-        @problem.update_individuals!(recombined_individuals, generation, keep: best_individual)
+        @problem.update_individuals!(
+          recombined_individuals,
+          generation,
+          keep: best_individual
+        )
       else
         @problem.update_individuals!(recombined_individuals, generation)
       end
@@ -69,20 +73,3 @@ class Optimizer
     [generations_best, generations_average, generations_worst]
   end
 end
-
-require_relative 'problems/weighted_queens'
-require_relative 'selectors/tournament'
-require_relative 'mutations/swap'
-require_relative 'crossovers/pmx'
-
-population_args = {
-  size: 50,
-}
-
-Optimizer.new(
-  Problems::WeightedQueens.new(population_args, 8),
-  Selectors::Tournament.new(k: 2, kp: 1),
-  Mutations::Swap.new(0.1),
-  Crossovers::PMX.new(0.99),
-  elitism: true
-).test(runs: 5, generations: 100)

@@ -9,8 +9,11 @@ class Individual
   attr_reader :info, :chromossomes
 
   def fitness
-    # raise if @fitness and ((@problem.offset + @problem.evaluate(self).to_f) / @problem.scale) != @fitness
-    @fitness ||= (@problem.offset + @problem.evaluate(self).to_f) / @problem.scale
+    @fitness ||= (@problem.offset + penalized_evalutation.to_f) / @problem.scale
+  end
+
+  def penalized_evalutation
+    @problem.evaluate(self) - @problem.penality(self)
   end
 
   def reset_fitness!

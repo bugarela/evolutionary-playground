@@ -6,6 +6,7 @@ class Plotter
       Gnuplot::Plot.new(gp) do |plot|
 
         plot.xrange "[0:#{best.length}]"
+        plot.yrange "[0:1.1]"
         plot.title  'Evolution'
         plot.xlabel 'Generations'
         plot.ylabel 'Fitness'

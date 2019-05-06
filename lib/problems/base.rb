@@ -28,6 +28,10 @@ module Problems
       individuals_by_fitness.map(&:fitness).mean
     end
 
+    def penality(_individual)
+      0
+    end
+
     def update_individuals!(new_individuals, generation, keep: nil)
       individuals = new_individuals.map do |individual|
         Individual.new(self, individual, generation)

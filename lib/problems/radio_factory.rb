@@ -9,7 +9,7 @@ module Problems
       population_args.merge!(problem_population_args)
 
       super(
-        Populations::Binary.new(self, population_args),
+        Populations::Binary.new(self, population_args).individuals,
         offset: 0,
         scale: 1040
       )
