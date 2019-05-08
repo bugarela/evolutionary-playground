@@ -9,7 +9,12 @@ class Individual
   attr_reader :info, :chromossomes
 
   def fitness
-    @fitness ||= (@problem.offset + penalized_evalutation.to_f) / @problem.scale
+    # @fitness ||= (@problem.offset + log_scaled_evaluation.to_f) / @problem.scale if @problem.log_scale
+    @fitness ||= [(@problem.offset + penalized_evalutation.to_f) / @problem.scale, 0.1].max
+  end
+
+  def log_scaled_evaluation
+    Math.log(penalized_evalutation + 1, @problem.log_scale + 1)
   end
 
   def penalized_evalutation

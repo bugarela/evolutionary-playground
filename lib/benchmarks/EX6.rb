@@ -5,13 +5,13 @@ require_relative '../mutations/swap'
 require_relative '../crossovers/pmx'
 
 population_args = {
-  size: 30,
+  size: 20,
 }
 
 Optimizer.new(
-  Problems::Queens.new(population_args, 128),
+  Problems::Queens.new(population_args, 8),
   Selectors::Tournament.new(k: 2, kp: 1),
   Mutations::Swap.new(0.1),
   Crossovers::PMX.new(0.99),
   elitism: true
-).test(runs: 30, generations: 1000)
+).test(runs: 30, generations: 500)

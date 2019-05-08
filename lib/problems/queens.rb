@@ -10,8 +10,9 @@ module Problems
       @population_args = population_args.merge(problem_population_args)
 
       super(
-        offset: -1 * n/10,
-        scale: -1 * n/10
+        offset: -1 * n,
+        scale: -1 * n,
+        # log_scale: 8,
       )
     end
 

@@ -4,12 +4,13 @@ require_relative '../individual'
 
 module Problems
   class Base
-    def initialize(offset:, scale:)
+    def initialize(offset:, scale:, log_scale: nil)
       @offset = offset
       @scale = scale
+      @log_scale = log_scale
     end
 
-    attr_reader :offset, :scale, :individuals_by_fitness
+    attr_reader :offset, :scale, :log_scale, :individuals_by_fitness
 
     def population_size
       individuals_by_fitness.length
