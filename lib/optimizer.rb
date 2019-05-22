@@ -2,12 +2,13 @@ require 'descriptive_statistics'
 require_relative 'plotter'
 
 class Optimizer
-  def initialize(problem, selector, mutation, crossover, elitism: false)
+  def initialize(problem, selector, mutation, crossover, elitism: false, diversity_metric: nil)
     @problem = problem
     @selector = selector
     @mutation = mutation
     @crossover = crossover
     @elitism = elitism
+    @diversity_metric = diversity_metric
   end
 
   def test(runs:, generations:)
@@ -17,7 +18,7 @@ class Optimizer
     final_bests = []
 
     runs.times do
-      best, average, worst = run(generations)
+      best, average, worst, diversity = run(generations)
       best_average << best
       average_average << average
       worst_average << worst
@@ -40,8 +41,11 @@ class Optimizer
     generations_best = []
     generations_average = []
     generations_worst = []
+    generations_diversity = []
 
     number_of_generations.times do |generation|
+      diversity = @diversity_metric.new(@problem.individuals_by_fitness).measure if @diversity_metric
+
       selected_population = @selector.select(@problem)
 
       mutated_individuals = @mutation.mutate(selected_population)
@@ -67,11 +71,12 @@ class Optimizer
       generations_best << @problem.best.fitness
       generations_average << @problem.average_fitness
       generations_worst << @problem.worst.fitness
+      generations_diversity << diversity if @diversity_metric
     end
 
     puts 'Best Individual'.green
     best_individual.show
 
-    [generations_best, generations_average, generations_worst]
+    [generations_best, generations_average, generations_worst, generations_diversity]
   end
 end
