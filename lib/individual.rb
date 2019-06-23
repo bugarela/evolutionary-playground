@@ -7,10 +7,14 @@ class Individual
   end
 
   attr_reader :info, :chromossomes
+  attr_writer :chromossomes
+
+  def simple_fitness
+    @simple_fitness ||= [(@problem.offset + penalized_evalutation.to_f) / @problem.scale, 0.1].max
+  end
 
   def fitness
-    # @fitness ||= (@problem.offset + log_scaled_evaluation.to_f) / @problem.scale if @problem.log_scale
-    @fitness ||= [(@problem.offset + penalized_evalutation.to_f) / @problem.scale, 0.1].max
+    @problem.alpha * simple_fitness + @problem.beta
   end
 
   def log_scaled_evaluation
@@ -26,7 +30,7 @@ class Individual
   end
 
   def value
-    @value ||= @problem.translate(@chromossomes)
+    @problem.translate(@chromossomes)
   end
 
   def show

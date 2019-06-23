@@ -2,12 +2,14 @@ require 'descriptive_statistics'
 require_relative 'plotter'
 
 class Optimizer
-  def initialize(problem, selector, mutation, crossover, elitism: false, diversity_metric: nil)
+  def initialize(problem, selector, mutation, crossover,
+    elitism: false, generation_gap: 0, diversity_metric: nil)
     @problem = problem
     @selector = selector
     @mutation = mutation
     @crossover = crossover
     @elitism = elitism
+    @generation_gap = generation_gap
     @diversity_metric = diversity_metric
   end
 
@@ -17,7 +19,7 @@ class Optimizer
     worst_average = []
     final_bests = []
 
-    runs.times do
+    Parallel.each(runs.times, in_threads: 1, progress: "Doing stuff") do |_|
       best, average, worst, diversity = run(generations)
       best_average << best
       average_average << average
@@ -56,10 +58,14 @@ class Optimizer
         @problem.update_individuals!(
           recombined_individuals,
           generation,
-          keep: best_individual
+          keep: ([best_individual] + @problem.gap(@generation_gap)).compact
         )
       else
-        @problem.update_individuals!(recombined_individuals, generation)
+        @problem.update_individuals!(
+          recombined_individuals,
+          generation,
+          keep: @problem.gap(@generation_gap)
+        )
       end
 
       best_individual ||= @problem.best.dup

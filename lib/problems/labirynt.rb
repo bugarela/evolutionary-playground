@@ -4,7 +4,7 @@ require_relative '../populations/binary'
 
 module Problems
   class Labirynt < Base
-    STEPS = 250
+    STEPS = 100
 
     def initialize(population_args)
       @population_args = population_args.merge(problem_population_args)
@@ -17,7 +17,7 @@ module Problems
 
     def evaluate(individual)
       steps = individual.value
-      function(steps)
+      function(steps, individual)
     end
 
     def translate(chromossomes)
@@ -30,6 +30,7 @@ module Problems
 
     def show_variables(steps)
       puts "Steps: #{steps}".yellow
+      draw_labyrint(steps)
       puts @result_labyrint.map { |row| row.join(' ') }
       @result_labyrint = nil
     end
@@ -83,21 +84,60 @@ module Problems
       ]
     end
 
-    def function(steps)
+    def function(steps,individual)
       step_counter = 0
+      good_steps = []
+      cells = []
       @cell = start_cell
+      old_step = 2
+      penality = 0
+      steps.each do |step|
+        new_cell = walk(step)
+        if !valid_cell?(new_cell)
+          original_step = step
+          step = old_step
+
+          if original_step == old_step
+            original_step = step = [(step + 1) % 4, (step + 3) % 4].sample
+          end
+
+          new_cell = walk(step)
+
+          if !valid_cell?(new_cell)
+            step = (original_step + 2) % 4
+            new_cell = walk(step)
+
+            if !valid_cell?(new_cell)
+              step = (old_step + 2) % 4
+              new_cell = walk(step)
+              penality = 10
+            end
+          end
+        end
+        @cell = new_cell
+        cells << new_cell
+        good_steps << step
+        step_counter += 1
+        return 0 if end_cell?(@cell)
+
+        old_step = step
+      end
+
+      individual.chromossomes = encode(good_steps)
+      return cell_distance(@cell) + (penality - cell_distance(@cell)/2) if penality
+      cell_distance(@cell)
+    end
+
+    def draw_labyrint(steps)
+      @cell = start_cell
+      step_counter = 0
       @result_labyrint = labirynt_matrix.map { |row| row.map { |cell| draw(cell) } }
       steps.each do |step|
         new_cell = walk(step)
-        if valid_cell?(new_cell)
-          @cell = new_cell
-          fill(step_counter)
-          return 0 if end_cell?(@cell)
-        end
+        @cell = new_cell
+        fill(step_counter)
         step_counter += 1
       end
-
-      cell_distance(@cell)
     end
 
     def walk(step)
@@ -158,6 +198,10 @@ module Problems
       steps = []
       binary.each_slice(2) { |a, b| steps << (a.to_s + b.to_s).to_i(2) }
       steps
+    end
+
+    def encode(steps)
+      steps.map { |step| step.to_s(2).rjust(2, '0').split('').map(&:to_i) }.flatten
     end
 
     def problem_population_args
