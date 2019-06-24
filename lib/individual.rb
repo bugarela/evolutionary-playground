@@ -14,6 +14,8 @@ class Individual
   end
 
   def fitness
+    return simple_fitness unless @problem.scale_fitness?
+
     @problem.alpha * simple_fitness + @problem.beta
   end
 

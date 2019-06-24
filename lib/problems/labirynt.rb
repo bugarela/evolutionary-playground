@@ -98,7 +98,8 @@ module Problems
           step = old_step
 
           if original_step == old_step
-            original_step = step = [(step + 1) % 4, (step + 3) % 4].sample
+            original_step = [(step + 1) % 4, (step + 3) % 4].sample
+            step = original_step
           end
 
           new_cell = walk(step)
@@ -114,11 +115,19 @@ module Problems
             end
           end
         end
+        while !valid_cell?(new_cell)
+          step = [0,1,2,3].sample
+          new_cell = walk(step)
+        end
+        binding.pry if !valid_cell?(new_cell)
         @cell = new_cell
         cells << new_cell
         good_steps << step
         step_counter += 1
-        return 0 if end_cell?(@cell)
+        if end_cell?(@cell)
+          individual.chromossomes = encode(good_steps)
+          return 0
+        end
 
         old_step = step
       end

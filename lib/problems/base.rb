@@ -5,10 +5,10 @@ require_relative '../individual'
 
 module Problems
   class Base
-    def initialize(offset:, scale:, log_scale: nil)
+    def initialize(offset:, scale:, scale_fitness: true)
       @offset = offset
       @scale = scale
-      @log_scale = log_scale
+      @scale_fitness = scale_fitness
     end
 
     C = 1.5
@@ -31,10 +31,14 @@ module Problems
       @beta
     end
 
+    def scale_fitness?
+      @scale_fitness
+    end
+
     def calculate_scaled_fitness_coefficients
       f_min = worst.simple_fitness
       f_max = best.simple_fitness
-      f_avg = average_fitness
+      f_avg = average_simple_fitness
 
       if f_min > (C * f_avg - f_max) / (C - 1)
         @alpha = (f_avg * (C - 1))/(f_max - f_avg)
@@ -43,6 +47,10 @@ module Problems
         @alpha = (f_avg)/(f_avg - f_min)
         @beta = (-f_min * f_avg)/(f_avg - f_min)
       end
+    end
+
+    def average_simple_fitness
+      individuals_by_fitness.map(&:simple_fitness).mean
     end
 
     def best
@@ -54,7 +62,7 @@ module Problems
     end
 
     def average_fitness
-      individuals_by_fitness.map(&:simple_fitness).mean
+      individuals_by_fitness.map(&:fitness).mean
     end
 
     def penality(_individual)
