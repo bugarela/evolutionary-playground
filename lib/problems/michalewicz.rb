@@ -4,8 +4,8 @@ require_relative '../populations/binary'
 
 module Problems
   class Michalewicz < Base
-    VARIABLE_SIZE = 12 #37
-    DECIMAL_FACTOR = 1_000 #10_000_000_000
+    VARIABLE_SIZE = 37 # 12
+    DECIMAL_FACTOR = 10_000_000_000 # 1_000
 
     def initialize(population_args)
       @population_args = population_args
@@ -49,7 +49,7 @@ module Problems
 
     def function(variables)
       variables.map_with_index do |x, i|
-        Math::sin(x) * Math::sin(i*x**2/Math::PI)**20
+        Math::sin(x) * Math::sin((i+1)*x**2/Math::PI)**20
       end.inject(:+)
 
     end

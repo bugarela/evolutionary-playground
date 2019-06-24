@@ -103,7 +103,7 @@ module Problems
     end
 
     def calculate(population)
-      Parallel.map(population, in_threads: 6) do |individual|
+      Parallel.map(population, in_threads: 2) do |individual|
         individual.simple_fitness
         individual
       end

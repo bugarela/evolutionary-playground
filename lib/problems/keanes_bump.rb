@@ -4,8 +4,8 @@ require_relative '../populations/binary'
 
 module Problems
   class KeanesBump < Base
-    VARIABLE_SIZE = 12 #37
-    DECIMAL_FACTOR = 1_000 #10_000_000_000
+    VARIABLE_SIZE = 37 #12 #37
+    DECIMAL_FACTOR = 10_000_000_000 # 1_000
 
     def initialize(population_args)
       @population_args = population_args
@@ -52,7 +52,7 @@ module Problems
       (variables.map { |x| Math.cos(x)**4 }.inject(:+) -
         2 * variables.map { |x| Math.cos(x)**2 }.inject(:*)
       ).abs / Math.sqrt(
-        variables.map_with_index { |x, i| i*x**2 }.inject(:+)
+        variables.map_with_index { |x, i| (i+1)*x**2 }.inject(:+)
       )
     end
 
@@ -68,7 +68,7 @@ module Problems
         decimal = variable.last(VARIABLE_SIZE - 4).inject { |a,b| a.to_s + b.to_s }.to_i(2)
         variables << integer + (decimal % DECIMAL_FACTOR).to_f / DECIMAL_FACTOR
       end
-      variables
+      variables.sort.reverse
     end
 
     def adjust_scale(variables)

@@ -19,7 +19,7 @@ class Optimizer
     worst_average = []
     final_bests = []
 
-    Parallel.each(runs.times, in_threads: 2, progress: "Otimizando") do |_|
+    Parallel.each(runs.times, in_threads: 1, progress: "Otimizando") do |_|
       best, average, worst, diversity = run(generations)
       best_average << best
       average_average << average

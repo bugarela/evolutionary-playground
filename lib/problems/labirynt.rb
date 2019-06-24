@@ -88,11 +88,11 @@ module Problems
       step_counter = 0
       good_steps = []
       cells = []
-      @cell = start_cell
+      cell = start_cell
       old_step = 2
       penality = 0
       steps.each do |step|
-        new_cell = walk(step)
+        new_cell = walk(cell, step)
         if !valid_cell?(new_cell)
           original_step = step
           step = old_step
@@ -102,29 +102,29 @@ module Problems
             step = original_step
           end
 
-          new_cell = walk(step)
+          new_cell = walk(cell, step)
 
           if !valid_cell?(new_cell)
             step = (original_step + 2) % 4
-            new_cell = walk(step)
+            new_cell = walk(cell, step)
 
             if !valid_cell?(new_cell)
               step = (old_step + 2) % 4
-              new_cell = walk(step)
+              new_cell = walk(cell, step)
               penality = 10
             end
           end
         end
         while !valid_cell?(new_cell)
           step = [0,1,2,3].sample
-          new_cell = walk(step)
+          new_cell = walk(cell, step)
         end
         binding.pry if !valid_cell?(new_cell)
-        @cell = new_cell
+        cell = new_cell
         cells << new_cell
         good_steps << step
         step_counter += 1
-        if end_cell?(@cell)
+        if end_cell?(cell)
           individual.chromossomes = encode(good_steps)
           return 0
         end
@@ -133,32 +133,32 @@ module Problems
       end
 
       individual.chromossomes = encode(good_steps)
-      return cell_distance(@cell) + (penality - cell_distance(@cell)/2) if penality
-      cell_distance(@cell)
+      return cell_distance(cell) + (penality - cell_distance(cell)/2) if penality
+      cell_distance(cell)
     end
 
     def draw_labyrint(steps)
-      @cell = start_cell
+      cell = start_cell
       step_counter = 0
       @result_labyrint = labirynt_matrix.map { |row| row.map { |cell| draw(cell) } }
       steps.each do |step|
-        new_cell = walk(step)
-        @cell = new_cell
-        fill(step_counter)
+        new_cell = walk(cell, step)
+        cell = new_cell
+        fill(step_counter, cell)
         step_counter += 1
       end
     end
 
-    def walk(step)
+    def walk(cell, step)
       case step
       when 0 # up
-        [@cell[0] - 1, @cell[1]]
+        [cell[0] - 1, cell[1]]
       when 1 # right
-        [@cell[0], @cell[1] + 1]
+        [cell[0], cell[1] + 1]
       when 2 # down
-        [@cell[0] + 1, @cell[1]]
+        [cell[0] + 1, cell[1]]
       when 3 # left
-        [@cell[0], @cell[1] - 1]
+        [cell[0], cell[1] - 1]
       end
     end
 
@@ -178,7 +178,7 @@ module Problems
       )
     end
 
-    def fill(step_counter)
+    def fill(step_counter, cell)
       if step_counter > 99
         counter = step_counter.to_s
       elsif step_counter > 9
@@ -186,8 +186,8 @@ module Problems
       else
         counter = "00#{step_counter}"
       end
-      binding.pry if labirynt_matrix[@cell[0]][@cell[1]] == 0
-      @result_labyrint[@cell[0]][@cell[1]] = counter.blue
+      binding.pry if labirynt_matrix[cell[0]][cell[1]] == 0
+      @result_labyrint[cell[0]][cell[1]] = counter.blue
     end
 
     def draw(cell)

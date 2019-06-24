@@ -15,4 +15,4 @@ Optimizer.new(
   Crossovers::OnePoint.new(0.9),
   elitism: true,
   generation_gap: 0.7
-).test(runs: 2, generations: 1000)
+).test(runs: 2, generations: 600)
