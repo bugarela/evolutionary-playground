@@ -5,7 +5,7 @@ require_relative '../mutations/bit_flip'
 require_relative '../crossovers/one_point'
 
 population_args = {
-  size: 20,
+  size: 15,
 }
 
 Optimizer.new(
