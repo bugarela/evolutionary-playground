@@ -15,4 +15,7 @@ Optimizer.new(
   Crossovers::OnePoint.new(0.9),
   elitism: true,
   generation_gap: 0.7
-).test(runs: 2, generations: 600)
+).test(runs: 100, generations: 600)
+
+# Average: 0.9881360389693213
+# Standard Deviation: 0.02844725696200835

@@ -4,8 +4,8 @@ require_relative '../populations/binary'
 
 module Problems
   class Michalewicz < Base
-    VARIABLE_SIZE = 37 # 12
-    DECIMAL_FACTOR = 10_000_000_000 # 1_000
+    VARIABLE_SIZE = 12 #37
+    DECIMAL_FACTOR = 1_000 # 10_000_000_000
 
     def initialize(population_args)
       @population_args = population_args

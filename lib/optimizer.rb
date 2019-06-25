@@ -31,7 +31,7 @@ class Optimizer
     average_average = average_average.transpose.map(&:mean)
     worst_average = worst_average.transpose.map(&:mean)
 
-    Plotter.new.plot(best_average, average_average, worst_average)
+    Plotter.new.plot(@problem.class.to_s, best_average, average_average, worst_average)
     puts "Average: #{final_bests.mean}".red
     puts "Standard Deviation: #{final_bests.standard_deviation}".red
   end
@@ -74,9 +74,9 @@ class Optimizer
         best_individual = @problem.best.dup
       end
 
-      generations_best << @problem.best.fitness
-      generations_average << @problem.average_fitness
-      generations_worst << @problem.worst.fitness
+      generations_best << @problem.best.simple_fitness
+      generations_average << @problem.average_simple_fitness
+      generations_worst << @problem.worst.simple_fitness
       generations_diversity << diversity if @diversity_metric
     end
 

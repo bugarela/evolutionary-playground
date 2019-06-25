@@ -1,9 +1,11 @@
 require 'gnuplot'
 
 class Plotter
-  def plot(best, average, worst)
+  def plot(problem, best, average, worst)
     Gnuplot.open do |gp|
       Gnuplot::Plot.new(gp) do |plot|
+        plot.terminal "png"
+        plot.output File.expand_path("../../plots/#{problem}.png", __FILE__)
 
         plot.xrange "[0:#{best.length}]"
         plot.yrange "[0:1.1]"

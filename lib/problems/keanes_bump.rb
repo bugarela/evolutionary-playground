@@ -14,7 +14,6 @@ module Problems
       super(
         offset: 0,
         scale: 1,
-        scale_fitness: false,
       )
     end
 
